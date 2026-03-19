@@ -1,0 +1,40 @@
+[project]
+name = "squid"
+version = "0.1.0"
+description = "SQL Unique Interpretation through Deep Parsing - rule-based English-to-SQL via ERG+DMRS"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "SQUID Contributors"}
+]
+readme = "README.md"
+dependencies = [
+    "pydelphin>=1.9.0",
+    "sqlglot>=20.0",
+    "rapidfuzz>=3.0",
+    "lemminflect>=0.2.3",
+    "inflect>=7.0",
+    "networkx>=3.0",
+    "word2number>=1.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov", "mypy>=1.8"]
+spider = ["dateparser>=1.0"]
+
+[build-system]
+requires = ["setuptools>=68.0", "mypy[mypyc]>=1.8"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+strict = true
