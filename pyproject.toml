@@ -9,6 +9,7 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
+    "tolk",  # not published: install it from its checkout, see README ("Install")
     "pydelphin>=1.9.0",
     "sqlglot>=20.0",
     "rapidfuzz>=3.0",
@@ -23,7 +24,7 @@ dev = ["pytest>=7.0", "pytest-cov", "mypy>=1.8"]
 spider = ["dateparser>=1.0"]
 
 [build-system]
-requires = ["setuptools>=68.0", "mypy[mypyc]>=1.8"]
+requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
@@ -38,3 +39,6 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 strict = true
+
+[tool.setuptools]
+packages = ["squid"]

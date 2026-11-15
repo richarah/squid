@@ -60,8 +60,12 @@ SQL query
 ### Install SQUID
 
 ```bash
-pip install squid
+pip install -e ../tolk -e .
 ```
+
+This is the one command, run in a checkout of SQUID with a checkout of [tolk](https://github.com/richarah/tolk) beside it. tolk is a
+dependency by local path for now: it is not published, so **tolk must be published before SQUID can be released.** tolk needs the ACE
+binary and the grammar image in its own `erg/` directory (`sh ../tolk/scripts/setup_erg.sh`).
 
 ### Download ACE and ERG
 
