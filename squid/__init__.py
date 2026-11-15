@@ -10,7 +10,6 @@ from __future__ import annotations
 import tolk
 
 from squid.compiler import SquidCompileError
-from squid.lexicon import generate_tdl, write_tdl
 from squid.parser import SquidParseError
 from squid.schema import Column, ForeignKey, Schema, Table
 from squid.tolk_backend import predicates, to_sql, vocabulary
@@ -25,8 +24,6 @@ __all__ = [
     "ForeignKey",
     "SquidParseError",
     "SquidCompileError",
-    "generate_tdl",
-    "write_tdl",
 ]
 
 
