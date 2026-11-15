@@ -1,0 +1,39 @@
+questions: 1034
+not refused (an SQL was produced): 0 = 0.0%  (refused 1033, errors 1)
+correct of those not refused: none
+correct overall: 0 of 1034 = 0.0%
+
+ten most frequent refusal reasons:
+   323  UNSUPPORTED_FORCE: comm
+   271  DEFINITE_NEEDS_STORE: _the_q
+    73  NO_EVENT_READING: none of the readings has a predicate on the sentence event
+    21  UNSUPPORTED_PREDICATE: more_comp
+    20  UNIVERSAL_QUESTION: a question that asks for things, or counts them, over every thing
+    18  UNKNOWN_WORD: schoolers
+    12  GRAMMAR_ARTIFACT: place_n
+    10  UNSUPPORTED_TENSE: tensed on _find_v_1
+     9  NO_ANTECEDENT: nothing agreeing in number (sg) has been mentioned
+     8  UNKNOWN_PREDICATE: _have_v_1 is no table of the schema
+
+by refusal code (refused 1034):
+   323  UNSUPPORTED_FORCE
+   271  DEFINITE_NEEDS_STORE
+   104  UNKNOWN_WORD
+    73  NO_EVENT_READING
+    56  UNSUPPORTED_ASPECT
+    52  UNSUPPORTED_TENSE
+    39  UNSUPPORTED_PREDICATE
+    25  UNKNOWN_PREDICATE
+    20  UNIVERSAL_QUESTION
+    20  UNSUPPORTED_QUANTIFIER
+    17  NO_ANTECEDENT
+    13  GRAMMAR_ARTIFACT
+     5  UNSUPPORTED_QUESTION
+     5  ARGUMENT_GAP
+     5  DEMONSTRATIVE
+     1  IDENTITY_NOT_YET
+     1  UNCONSUMED
+     1  UNBOUND_VARIABLE
+     1  FALLBACK_PARSE
+     1  MRSSyntaxError
+     1  COORDINATION
