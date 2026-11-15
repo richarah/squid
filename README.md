@@ -60,12 +60,14 @@ SQL query
 ### Install SQUID
 
 ```bash
-pip install -e ../tolk -e .
+pip install -e '.[dev]'
 ```
 
-This is the one command, run in a checkout of SQUID with a checkout of [tolk](https://github.com/richarah/tolk) beside it. tolk is a
-dependency by local path for now: it is not published, so **tolk must be published before SQUID can be released.** tolk needs the ACE
-binary and the grammar image in its own `erg/` directory (`sh ../tolk/scripts/setup_erg.sh`).
+SQUID depends on [tolk](https://github.com/richarah/tolk), by its git address (branch `housekeeping` for now). **That repository is private
+for now**, so the install needs git credentials that can read it, and tolk must be published before SQUID can be released.
+
+tolk needs the ACE parser binary and the grammar image. In a checkout of tolk, `sh scripts/setup_erg.sh` puts them in its `erg/`; an installed
+copy of tolk has no checkout beside it, so name that directory: `export TOLK_ERG_DIR=/path/to/tolk/erg`.
 
 ### Download ACE and ERG
 
