@@ -1,5 +1,7 @@
 # SQUID: English questions to SQL
 
+> **SQUID depends on a private repository for now (tolk), so only its owner can install it.**
+
 SQUID turns an English question into SQL over a database schema. The sentence is read by [tolk](https://github.com/richarah/tolk) (the ACE
 parser and the English Resource Grammar); SQUID's schema linking says which tables the words mean; sqlglot writes the SQL. There is no
 neural component.
@@ -13,7 +15,8 @@ question (`Ask`, `Describe`) becomes SQL; anything else raises `SquidCompileErro
 - A table is a noun. A table with two or more foreign keys is a relation: a verb whose subject is its first foreign key.
 - Yes-or-no, who/which, how-many and negated questions over those tables compile ("Which dogs does Kim own?", "How many dogs does Kim own?",
   "Does Kim not own Fido?").
-- A name is compared in lower case with the `name` column.
+- A name is compared in lower case with the `name` column. A value that is in a `name` column (read when the schema comes from SQLite) is read
+  as that value, so "Ga" is Ga and not Georgia; a name the question does not contain as written, or a value written in another case, is refused.
 - Not supported, and refused: statements, rules, claims, comparisons, "every", an or, a past tense, and any word that is not a table.
 - The first pipeline (ACE, DMRS, the old compiler) is in `squid/legacy.py`. Nothing calls it. It does not run with the ACE binary this
   repository uses: ACE has no `--extra-lexicon` option and `squid/parser.py` cannot read ACE's output.
@@ -31,8 +34,8 @@ print(squid.compile("Which dogs does Kim own?", schema))
 pip install -e '.[dev]'
 ```
 
-SQUID depends on tolk by its git address (branch `housekeeping` for now). **That repository is private for now**, so the install needs git
-credentials that can read it, and tolk must be published before SQUID can be released.
+SQUID depends on tolk by its git address, pinned at the `v0.1.0` tag. **That repository is private for now**, so the install needs git
+credentials that can read it: only its owner can install SQUID until tolk is published.
 
 tolk needs the ACE parser binary and the grammar image. In a checkout of tolk, `sh scripts/setup_erg.sh` puts them in its `erg/`; an
 installed copy of tolk has no checkout beside it, so name that directory: `export TOLK_ERG_DIR=/path/to/tolk/erg`.

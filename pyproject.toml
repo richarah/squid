@@ -9,7 +9,7 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
-    "tolk @ git+https://github.com/richarah/tolk.git@housekeeping",  # private for now: see README ("Install")
+    "tolk @ git+https://github.com/richarah/tolk.git@v0.1.0",  # private for now: see README ("Install")
     "pydelphin>=1.9.0",
     "sqlglot>=20.0",
     "rapidfuzz>=3.0",
