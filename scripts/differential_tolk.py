@@ -84,7 +84,7 @@ def main() -> int:
     db = sqlite3.connect(":memory:")
     db.executescript(DDL)
     schema = squid.Schema.from_sqlite(":memory:") if False else _schema(db)
-    mind = tolk.Mind()
+    mind = tolk.Mind(closed_world=True)
     for s in sentences(db):
         assert mind.tell(s).outcome.startswith("stored"), s
     known = predicates(schema)

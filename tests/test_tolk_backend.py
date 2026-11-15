@@ -20,7 +20,7 @@ def world():
     db = sqlite3.connect(":memory:")
     db.executescript(d.DDL)
     schema = d._schema(db)
-    mind = tolk.Mind()
+    mind = tolk.Mind(closed_world=True)
     for s in d.sentences(db):
         mind.tell(s)
     return db, schema, mind, predicates(schema)
@@ -41,16 +41,14 @@ def test_a_predicate_the_schema_lacks_is_refused(world) -> None:
     assert isinstance(out, tolk.Refusal) and out.code == "UNKNOWN_PREDICATE"
 
 
-@pytest.mark.parametrize("question", [q for q in d.QUESTIONS if "not" not in q and "Fido" not in q])
+@pytest.mark.parametrize("question", d.QUESTIONS)
 def test_the_rows_equal_tolks_answer(world, question: str) -> None:
     db, schema, mind, known = world
     ok, t, rows, sql = d.compare(question, mind, db, schema, known)
     assert ok, (t, rows, sql)
 
 
-def test_the_only_disagreements_are_absence_read_as_no_by_the_database_and_as_unknown_by_tolk(world) -> None:
+def test_all_fifteen_agree_with_the_world_closed(world) -> None:
     db, schema, mind, known = world
-    out = {q: d.compare(q, mind, db, schema, known) for q in d.QUESTIONS}
-    bad = {q for q, (ok, *_) in out.items() if not ok}
-    assert bad == {"Does Kim own Fido?", "Does Kim not own Fido?", "Which dogs does Kim not own?"}
-    assert all(out[q][1] == ("value", "Unknown") for q in bad)
+    assert len(d.QUESTIONS) == 15
+    assert [q for q in d.QUESTIONS if not d.compare(q, mind, db, schema, known)[0]] == []
