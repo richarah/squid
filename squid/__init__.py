@@ -1,145 +1,50 @@
 """
 SQUID - SQL Unique Interpretation through Deep Parsing
 
-A rule-based English-to-SQL compiler using ERG and DMRS.
-Zero neural components. Every decision auditable.
+English questions to SQL over a database schema. The sentence is read by tolk (ACE and the English Resource Grammar), and the schema
+decides which tables and columns its words mean. The first pipeline is in `squid/legacy.py` and is not used.
 """
 
 from __future__ import annotations
 
-from typing import Optional
+import tolk
 
-from delphin import dmrs
-
-from squid.compiler import DMRSCompiler, SquidCompileError
-from squid.disambiguator import disambiguate
+from squid.compiler import SquidCompileError
 from squid.lexicon import generate_tdl, write_tdl
-from squid.linker import link
-from squid.parser import ERGParser, SquidParseError
+from squid.parser import SquidParseError
 from squid.schema import Column, ForeignKey, Schema, Table
+from squid.tolk_backend import predicates, to_sql, vocabulary
 
 __version__ = "0.1.0"
 
 __all__ = [
-    # Main API
     "compile",
-    "from_dmrs",
-    # Core classes
     "Schema",
     "Table",
     "Column",
     "ForeignKey",
-    # Exceptions
     "SquidParseError",
     "SquidCompileError",
-    # Utilities
     "generate_tdl",
     "write_tdl",
 ]
 
 
-def compile(
-    question: str,
-    schema: Schema,
-    grm_path: str = "erg.dat",
-    ace_path: str = "ace",
-    n_parses: int = 5,
-    max_chart_megabytes: int = 1024,
-    max_unpack_megabytes: int = 1536,
-    max_edges: int = 50000,
-    timeout: float = 30.0,
-    dialect: str = "sqlite",
-) -> str:
-    """
-    Compile an English question to SQL.
+def compile(question: str, schema: Schema, dialect: str = "sqlite") -> str:
+    """Compile an English question to SQL.
 
-    This is the main entry point. It runs the full pipeline:
-    question → parse → disambiguate → link → compile → SQL
-
-    Args:
-        question: Natural language question
-        schema: Database schema
-        grm_path: Path to ERG grammar image (default: "erg.dat")
-        ace_path: Path to ACE binary (default: "ace")
-        n_parses: Number of parses to generate (1-10, default: 5)
-        max_chart_megabytes: Max chart memory in MB (default: 1024)
-        max_unpack_megabytes: Max unpack memory in MB (default: 1536)
-        max_edges: Max chart edges (default: 50000)
-        timeout: Parse timeout in seconds (default: 30.0)
-        dialect: SQL dialect for sqlglot (default: "sqlite")
-
-    Returns:
-        SQL query string
+    tolk reads the question, with the schema's table names given to the parser as tagged input and its tables as the predicates that
+    steer the choice between readings; the schema then turns the logical form into SQL.
 
     Raises:
-        SquidParseError: If parsing fails
-        SquidCompileError: If compilation fails
+        SquidCompileError: the question is not one the schema can answer (tolk's refusal code and reason are in the message).
 
     Example:
-        >>> from squid import compile, Schema
         >>> schema = Schema.from_sqlite("my_database.db")
-        >>> sql = compile("How many customers are there?", schema)
-        >>> print(sql)
-        SELECT COUNT(*) FROM customers
+        >>> compile("How many customers does Kim own?", schema)
     """
-    # Generate domain lexicon
-    tdl_path = write_tdl(schema, output_path=None)
-
-    # Parse with ERG
-    parser = ERGParser(
-        grm_path=grm_path,
-        ace_path=ace_path,
-        extra_lexicon=str(tdl_path),
-        n_parses=n_parses,
-        max_chart_megabytes=max_chart_megabytes,
-        max_unpack_megabytes=max_unpack_megabytes,
-        max_edges=max_edges,
-        timeout=timeout,
-    )
-
-    try:
-        parses = parser.parse_to_dmrs(question)
-    except Exception as e:
-        raise SquidParseError(f"ERG could not parse: {question!r}") from e
-
-    if not parses:
-        raise SquidParseError(f"ERG could not parse: {question!r}")
-
-    # Disambiguate by schema fit
-    best = disambiguate(parses, schema)
-
-    # Link predicates to schema
-    links = link(best, schema)
-
-    # Compile to SQL
-    compiler = DMRSCompiler(schema, links)
-    return compiler.compile(best, dialect=dialect)
-
-
-def from_dmrs(dmrs_obj: dmrs.Dmrs, schema: Schema, dialect: str = "sqlite") -> str:
-    """
-    Compile a pre-parsed DMRS to SQL.
-
-    For users who want to handle parsing themselves.
-
-    Args:
-        dmrs_obj: DMRS parse
-        schema: Database schema
-        dialect: SQL dialect for sqlglot (default: "sqlite")
-
-    Returns:
-        SQL query string
-
-    Raises:
-        SquidCompileError: If compilation fails
-
-    Example:
-        >>> from squid import from_dmrs, Schema
-        >>> from delphin import dmrs
-        >>> # ... parse question to get dmrs_obj ...
-        >>> schema = Schema.from_sqlite("my_database.db")
-        >>> sql = from_dmrs(dmrs_obj, schema)
-    """
-    links = link(dmrs_obj, schema)
-    compiler = DMRSCompiler(schema, links)
-    return compiler.compile(dmrs_obj, dialect=dialect)
+    x = tolk.read(question, predicates(schema), vocabulary(schema))
+    sql = to_sql(x, schema, dialect)
+    if isinstance(sql, tolk.Refusal):
+        raise SquidCompileError(f"{sql.code}: {sql.detail}")
+    return sql

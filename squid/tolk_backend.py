@@ -45,6 +45,11 @@ def predicates(schema: Schema) -> frozenset[str]:
     return frozenset(out)
 
 
+def vocabulary(schema: Schema) -> dict[str, str]:
+    """The class of each table name, for `tolk.read(text, known_predicates, vocabulary)`: a relation is a verb, any other table a noun."""
+    return {(re.sub(r"s$", "", t.name) if is_relation(schema, t.name) else t.name): "v" if is_relation(schema, t.name) else "n" for t in schema.tables}
+
+
 def to_sql(x, schema: Schema, dialect: str = "sqlite") -> str | tolk.Refusal:
     """SQL for a tolk Ask or Describe; a tolk Refusal for anything else, or for a question the schema cannot express."""
     if isinstance(x, tolk.Refusal):
