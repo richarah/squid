@@ -83,6 +83,8 @@ class Schema:
     db_id: str
     tables: List[Table]
     foreign_keys: List[ForeignKey]
+    # The text in each table's `name` column, where the schema was read from a database that has rows: the values a question may name.
+    values: Dict[str, List[str]] = field(default_factory=dict)
 
     # Precomputed lookup structures (populated in __post_init__)
     _table_name_set: FrozenSet[str] = field(default_factory=frozenset, init=False)
@@ -347,8 +349,14 @@ class Schema:
                     dst_column=dst_col
                 ))
 
+        values: Dict[str, List[str]] = {}
+        for table in tables:
+            if table.get_column("name"):
+                cursor.execute(f'SELECT DISTINCT "name" FROM "{table.name}" WHERE typeof("name") = \'text\'')
+                values[table.name] = [row[0] for row in cursor.fetchall()]
+
         conn.close()
-        return cls(db_id=db_id, tables=tables, foreign_keys=foreign_keys)
+        return cls(db_id=db_id, tables=tables, foreign_keys=foreign_keys, values=values)
 
     @classmethod
     def from_sqlalchemy(cls, engine, db_id: Optional[str] = None) -> Schema:

@@ -12,6 +12,7 @@ import tolk
 from squid.compiler import SquidCompileError
 from squid.parser import SquidParseError
 from squid.schema import Column, ForeignKey, Schema, Table
+from squid import values
 from squid.tolk_backend import predicates, to_sql, vocabulary
 
 __version__ = "0.1.0"
@@ -40,7 +41,7 @@ def compile(question: str, schema: Schema, dialect: str = "sqlite") -> str:
         >>> schema = Schema.from_sqlite("my_database.db")
         >>> compile("How many customers does Kim own?", schema)
     """
-    x = tolk.read(question, predicates(schema), vocabulary(schema))
+    x = values.read(question, schema, predicates(schema), vocabulary(schema))
     sql = to_sql(x, schema, dialect)
     if isinstance(sql, tolk.Refusal):
         raise SquidCompileError(f"{sql.code}: {sql.detail}")
