@@ -18,8 +18,8 @@ question (`Ask`, `Describe`) becomes SQL; anything else raises `SquidCompileErro
 - A name is compared in lower case with the `name` column. A value that is in a `name` column (read when the schema comes from SQLite) is read
   as that value, so "Ga" is Ga and not Georgia; a name the question does not contain as written, or a value written in another case, is refused.
 - Not supported, and refused: statements, rules, claims, comparisons, "every", an or, a past tense, and any word that is not a table.
-- The first pipeline (ACE, DMRS, the old compiler) is in `squid/legacy.py`. Nothing calls it. It does not run with the ACE binary this
-  repository uses: ACE has no `--extra-lexicon` option and `squid/parser.py` cannot read ACE's output.
+- The first pipeline (ACE, DMRS, its own compiler) was removed. It did not run with the ACE binary tolk uses: ACE has no
+  `--extra-lexicon` option, and its output parser could not read ACE's output. Its history is in git before the removal commit.
 
 ```python
 import squid
@@ -67,8 +67,8 @@ yes-or-no, who/which and how-many questions about named things, so it covers alm
 pytest tests
 ```
 
-`tests/legacy/` holds the five tests of the first pipeline that fail (marked expected failures with their reason). The rest of the legacy
-tests (rule tables, schema, linking, lexicon text) still pass.
+The tests of the first pipeline were removed with it. The remaining tests cover the schema, linking, the tolk back end and the
+differential test.
 
 ## Licence
 

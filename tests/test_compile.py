@@ -55,9 +55,10 @@ def test_a_sentence_that_is_not_a_question_raises_a_compile_error_with_the_reaso
         squid.compile("Pip tends Ada.", schema)
 
 
-def test_the_old_pipeline_is_called_from_nowhere() -> None:
+def test_the_old_pipeline_is_gone() -> None:
     import pathlib
     import re
-    for path in list(pathlib.Path(squid.__file__).parent.glob("*.py")) + list(pathlib.Path(__file__).parent.glob("*.py")):
-        if path.name not in ("legacy.py", "test_compile.py"):
-            assert not re.search(r"(import|from)\s+squid(\.legacy|\s+import\s+.*legacy)|from \.legacy|import legacy", path.read_text()), path
+    package = pathlib.Path(squid.__file__).parent
+    assert not (package / "legacy.py").exists()
+    for path in list(package.glob("*.py")) + list(pathlib.Path(__file__).parent.glob("*.py")):
+        assert not re.search(r"from\s+squid\.(legacy|compiler|parser|lexicon|rules|disambiguator)\b|import\s+squid\.(legacy|compiler|parser|lexicon|rules|disambiguator)\b", path.read_text()), path
