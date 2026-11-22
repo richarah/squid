@@ -34,7 +34,7 @@ print(squid.compile("Which dogs does Kim own?", schema))
 pip install -e '.[dev]'
 ```
 
-SQUID depends on tolk by its git address, pinned at the `v0.1.1` tag. **That repository is private for now**, so the install needs git
+SQUID depends on tolk by its git address, pinned at the `v0.1.2` tag. **That repository is private for now**, so the install needs git
 credentials that can read it: only its owner can install SQUID until tolk is published.
 
 tolk needs the ACE parser binary and the grammar image. In a checkout of tolk, `sh scripts/setup_erg.sh` puts them in its `erg/`; an
