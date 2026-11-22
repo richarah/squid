@@ -48,7 +48,7 @@ Every number here is printed by a script in this repository.
 |---|---|---|
 | Spider development set, 1034 questions, scored by running the predicted and the gold SQL on the question's database | not refused: 0 of 1034 (0.0%); correct of those not refused: none; correct overall: 0 of 1034 (0.0%) | `scripts/benchmark_spider.py` |
 | Differential test against tolk with its closed world on (15 questions over a small pets database) | 15 questions, 0 disagreements | `scripts/differential_tolk.py` |
-| Tests | 128 passed, 5 expected failures (133 collected) | `scripts/readme_numbers.py` |
+| Tests | 62 passed (62 collected) | `scripts/readme_numbers.py` |
 
 The Spider run is dated 2026-11-15, on the official development set (`dev.json` and its databases). Its full output is in
 `benchmarks/spider_dev_2026-11-15.txt` and, per question, `benchmarks/spider_dev_2026-11-15.json`. Nothing was tuned for it. The ten most
