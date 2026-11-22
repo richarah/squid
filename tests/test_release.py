@@ -5,9 +5,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_tolk_is_depended_on_at_the_v0_1_5_tag() -> None:
+def test_tolk_is_depended_on_at_the_v0_1_6_tag() -> None:
     text = (ROOT / "pyproject.toml").read_text()
-    assert "git+https://github.com/richarah/tolk.git@v0.1.5" in text
+    assert "git+https://github.com/richarah/tolk.git@v0.1.6" in text
     assert "@housekeeping" not in text
 
 
